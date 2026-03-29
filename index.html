@@ -3,14 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cruciverba Dantesco di Pasqua</title>
-    <!-- Tailwind CSS per lo stile -->
+    <title>Cruciverba Dantesco di Pasqua - Prof.ssa Sabagamer</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- React e Babel per far girare il codice JSX nel browser -->
     <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=EB+Garamond:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'EB Garamond', serif; }
@@ -18,23 +15,16 @@
         .custom-scrollbar::-webkit-scrollbar { width: 5px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #c2a371; border-radius: 10px; }
-        
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-        .animate-spin-custom {
-            animation: spin 1s linear infinite;
-        }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .animate-spin-custom { animation: spin 1s linear infinite; }
     </style>
 </head>
 <body class="bg-[#f4ecd8] text-[#4a2c2a]">
     <div id="root"></div>
-
     <script type="text/babel">
         const { useState, useEffect, useMemo } = React;
+        const apiKey = ""; 
 
-        // Semplici componenti Icona SVG per evitare errori di caricamento librerie esterne
         const Icon = ({ children, size = 24, className = "" }) => (
             <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
                 {children}
@@ -54,8 +44,6 @@
         };
 
         const GRID_SIZE = 18;
-        const apiKey = ""; 
-
         const RAW_WORDS = [
             { word: 'SELVA', r: 2, c: 2, dir: 'h', clue: 'Allegoria dello smarrimento morale e intellettuale che precede l\'ascesa alla salvezza.', hint: 'Locus terribilis dantesco per eccellenza.' },
             { word: 'STELLE', r: 2, c: 2, dir: 'v', clue: 'Parola-chiave che sigilla simmetricamente le tre cantiche, simbolo di aspirazione celeste.', hint: 'L\'ultimo verso di ogni cantica le nomina.' },
@@ -102,7 +90,6 @@
                         let currR = w.dir === 'h' ? w.r : w.r + i;
                         let currC = w.dir === 'h' ? w.c + i : w.c;
                         if (currR >= GRID_SIZE || currC >= GRID_SIZE) continue;
-                        
                         const cell = newGrid[currR][currC];
                         newGrid[currR][currC] = {
                             ...cell,
@@ -144,17 +131,12 @@
                 if (grid[r][c].isBlack) return;
                 if (selectedCell?.r === r && selectedCell?.c === c) {
                     const cellWords = grid[r][c].wordIndices.map(idx => wordsWithNumbers[idx]);
-                    if (cellWords.length > 1) {
-                        setDirection(prev => prev === 'h' ? 'v' : 'h');
-                    }
+                    if (cellWords.length > 1) setDirection(prev => prev === 'h' ? 'v' : 'h');
                 } else {
                     setSelectedCell({ r, c });
                     const cellWords = grid[r][c].wordIndices.map(idx => wordsWithNumbers[idx]);
                     if (cellWords.length === 1) setDirection(cellWords[0].dir);
-                    else {
-                        const hasCurrentDir = cellWords.some(w => w.dir === direction);
-                        if (!hasCurrentDir) setDirection(cellWords[0].dir);
-                    }
+                    else if (!cellWords.some(w => w.dir === direction)) setDirection(cellWords[0].dir);
                 }
             };
 
@@ -202,7 +184,7 @@
                                     <span className="text-[10px] uppercase font-bold bg-white/20 px-2 py-0.5 rounded">{activeWord.dir === 'h' ? 'Orizzontale' : 'Verticale'}</span>
                                     <p className="text-lg mt-1 font-medium">{activeWord.clue}</p>
                                 </div>
-                                <button onClick={() => askVirgil(activeWord)} disabled={isAiLoading} className="bg-[#f4ecd8] text-[#8b0000] px-4 py-2 rounded-full font-bold text-sm shadow-md flex items-center gap-2 hover:bg-white transition-all disabled:opacity-50">
+                                <button onClick={() => askVirgil(activeWord)} disabled={isAiLoading} className="bg-[#f4ecd8] text-[#8b0000] px-4 py-2 rounded-full font-bold text-sm shadow-md flex items-center gap-2 hover:bg-white transition-all">
                                     {isAiLoading ? <Icons.Loader2 size={16}/> : <Icons.Sparkles size={16}/>}
                                     Chiedi a Virgilio
                                 </button>
@@ -242,7 +224,6 @@
                                 if(ok && !empty) setIsCompleted(true); else alert(empty ? "Il cammino è incompleto!" : "Alcuni passi sono oscuri. Riprova!");
                             }} className="mt-6 px-12 py-3 bg-[#8b0000] text-white rounded-full font-bold shadow-xl hover:scale-105 transition-all">Verifica il Cammino</button>
                         </div>
-
                         <div className="lg:col-span-5 bg-white/50 p-6 rounded-xl border border-[#c2a371] h-[600px] overflow-y-auto custom-scrollbar shadow-inner">
                             <h2 className="text-2xl font-bold text-[#8b0000] mb-4 flex items-center gap-2 border-b border-[#c2a371] pb-2">
                                 <Icons.Book size={24}/> Definizioni
@@ -250,17 +231,14 @@
                             {['h', 'v'].map(d => (
                                 <div key={d} className="mb-6">
                                     <h3 className="text-xs font-black uppercase text-[#8b0000] mb-2 border-b border-[#c2a371]/30 pb-1">{d === 'h' ? 'Orizzontali' : 'Verticali'}</h3>
-                                    {wordsWithNumbers.filter(w => w.dir === d).sort((a,b)=>a.gridNum-b.gridNum).map(w => {
-                                        const isActive = activeWord?.word === w.word && activeWord?.dir === w.dir;
-                                        return (
-                                            <div key={`${w.word}-${w.dir}`} className={`mb-3 p-3 rounded-lg cursor-pointer transition-all border-l-4 ${isActive ? 'bg-[#8b0000] text-white border-yellow-400 shadow-md' : 'hover:bg-white/60 border-transparent'}`} onClick={() => {setSelectedCell({r:w.r, c:w.c}); setDirection(w.dir); const inp = document.getElementById(`cell-${w.r}-${w.c}`); if(inp) inp.focus();}}>
-                                                <div className="flex gap-2 items-start">
-                                                    <span className={`font-bold min-w-[20px] ${isActive ? 'text-yellow-300' : 'text-[#8b0000]'}`}>{w.gridNum}.</span>
-                                                    <p className="text-sm font-medium leading-snug">{w.clue}</p>
-                                                </div>
+                                    {wordsWithNumbers.filter(w => w.dir === d).sort((a,b)=>a.gridNum-b.gridNum).map(w => (
+                                        <div key={`${w.word}-${w.dir}`} className={`mb-3 p-3 rounded-lg cursor-pointer transition-all border-l-4 ${activeWord?.word === w.word && activeWord?.dir === w.dir ? 'bg-[#8b0000] text-white border-yellow-400 shadow-md' : 'hover:bg-white/60 border-transparent'}`} onClick={() => {setSelectedCell({r:w.r, c:w.c}); setDirection(w.dir); const inp = document.getElementById(`cell-${w.r}-${w.c}`); if(inp) inp.focus();}}>
+                                            <div className="flex gap-2 items-start">
+                                                <span className={`font-bold min-w-[20px] ${activeWord?.word === w.word && activeWord?.dir === w.dir ? 'text-yellow-300' : 'text-[#8b0000]'}`}>{w.gridNum}.</span>
+                                                <p className="text-sm font-medium leading-snug">{w.clue}</p>
                                             </div>
-                                        );
-                                    })}
+                                        </div>
+                                    ))}
                                 </div>
                             ))}
                         </div>
@@ -278,7 +256,7 @@
                     )}
                     
                     <footer className="mt-12 opacity-50 italic text-sm flex items-center gap-2 pb-8">
-                        <Icons.Feather size={16}/> Didattica Digitale - Liceo Dante Alighieri - 2024
+                        <Icons.Feather size={16}/> Prof.ssa Sabagamer 2026
                     </footer>
                 </div>
             );
